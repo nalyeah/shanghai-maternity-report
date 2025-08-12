@@ -11,8 +11,10 @@
   *{box-sizing:border-box}
   body{margin:0;background:linear-gradient(180deg,#0b1020,#0a0f1f);color:var(--ink);font:16px/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Helvetica,Arial,sans-serif}
   .wrap{max-width:1100px;margin:0 auto;padding:32px}
+  @media (max-width:768px){.wrap{padding:16px}}
   header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:20px}
   .title{font-size:28px;font-weight:800;letter-spacing:.3px}
+  @media (max-width:768px){.title{font-size:22px}}
   .pill{font-size:13px;color:#0b1020;background:var(--accent);padding:6px 10px;border-radius:999px}
   .grid{display:grid;gap:16px}
   .g-2{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -31,6 +33,22 @@
   table{width:100%;border-collapse:collapse;border-spacing:0}
   th,td{padding:10px 12px;border-bottom:1px dashed #203158;vertical-align:top}
   th{color:#bcd0ff;text-align:left;background:#0e162c;position:sticky;top:0}
+  @media (max-width:768px){
+    table{font-size:12px}
+    th,td{padding:6px 8px}
+    .mobile-table{display:block;overflow-x:auto;white-space:nowrap}
+    .desktop-table{display:none}
+    .mobile-cards{display:block}
+  }
+  @media (min-width:769px){
+    .mobile-cards{display:none}
+  }
+  .mobile-cards{display:none}
+  .center-card{background:#0e162b;border:1px solid #1f2d57;border-radius:12px;padding:16px;margin:12px 0}
+  .center-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .center-header h3{font-size:16px;margin:0;color:var(--ink)}
+  .center-info p{margin:8px 0;font-size:14px;line-height:1.4}
+  .center-info strong{color:#bcd0ff}
   .kpi{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
   .kpi .chip{background:#0d1a33;border:1px solid #1f2f57;color:#c8d6ff;border-radius:999px;padding:3px 8px;font-size:12px}
   .muted{color:var(--muted)}
@@ -40,7 +58,16 @@
   .addr{font-family:ui-monospace,Menlo,Consolas,monospace;color:#c7d2fe}
   footer{margin:28px 0 8px;color:#9fb2d9;font-size:13px}
 </style>
+<!-- 使用本地Chart.js或备用CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // 备用CDN，如果主CDN加载失败
+  if (typeof Chart === 'undefined') {
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/chart.js@4.4.0/dist/chart.umd.js';
+    document.head.appendChild(script);
+  }
+</script>
 </head>
 <body>
   <div class="wrap">
@@ -223,7 +250,13 @@
       <h2>评价雷达图</h2>
       <p class="muted">基于招聘信息透明度、口碑/风险、价格合理性（数值越高表示越划算）等维度的综合评价。</p>
       <div style="position: relative; height: 400px; max-width: 600px; margin: 0 auto;">
-        <canvas id="radarChart"></canvas>
+        <div id="chartLoading" style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--muted);">
+          <div style="text-align: center;">
+            <div style="font-size: 24px; margin-bottom: 8px;">📊</div>
+            <div>正在加载图表...</div>
+          </div>
+        </div>
+        <canvas id="radarChart" style="display: none;"></canvas>
       </div>
     </section>
 
@@ -241,6 +274,21 @@
   </div>
 
   <script>
+    // 网络状态检测
+    function checkNetworkStatus() {
+      if (!navigator.onLine) {
+        document.getElementById('chartLoading').innerHTML = `
+          <div style="text-align: center; color: var(--warn);">
+            <div style="font-size: 24px; margin-bottom: 8px;">⚠️</div>
+            <div>网络连接异常，图表可能无法正常显示</div>
+            <div style="font-size: 12px; margin-top: 8px;">请检查网络连接后刷新页面</div>
+          </div>
+        `;
+        return false;
+      }
+      return true;
+    }
+
     // 雷达图数据
     const radarData = {
       labels: ['Recruit Info Transparency', 'Reputation/Risk', 'Price Reasonableness'],
