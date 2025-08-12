@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>上海月子会所初步分析报告 · 可视版</title>
+<style>
+  :root{
+    --bg:#0b1020; --card:#121a31; --card2:#0e162b; --ink:#e8eefc; --muted:#9fb2d9; --accent:#7aa2ff; --good:#36d399; --warn:#fbbf24; --bad:#f43f5e; --mid:#60a5fa;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0b1020,#0a0f1f);color:var(--ink);font:16px/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Helvetica,Arial,sans-serif}
+  .wrap{max-width:1100px;margin:0 auto;padding:32px}
+  header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:20px}
+  .title{font-size:28px;font-weight:800;letter-spacing:.3px}
+  .pill{font-size:13px;color:#0b1020;background:var(--accent);padding:6px 10px;border-radius:999px}
+  .grid{display:grid;gap:16px}
+  .g-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  @media (max-width:900px){.g-2,.g-3{grid-template-columns:1fr}}
+  .card{background:radial-gradient(1200px 400px at 10% -10%,#1a2550 0%,transparent 40%),linear-gradient(180deg,var(--card),var(--card2));border:1px solid #1c2642;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:18px}
+  h2{font-size:20px;margin:0 0 8px 0}
+  h3{font-size:16px;margin:12px 0 8px 0;color:var(--muted);font-weight:700}
+  .tag{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;font-size:12px;background:#0e1b38;color:var(--muted);border:1px solid #1f2d52}
+  .legend{display:flex;gap:8px;flex-wrap:wrap}
+  .badge{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;font-weight:800}
+  .A{background:rgba(54,211,153,.15);border:1px solid var(--good);color:var(--good)}
+  .B{background:rgba(96,165,250,.15);border:1px solid var(--mid);color:var(--mid)}
+  .C{background:rgba(251,191,36,.15);border:1px solid var(--warn);color:var(--warn)}
+  .D{background:rgba(244,63,94,.15);border:1px solid var(--bad);color:var(--bad)}
+  table{width:100%;border-collapse:collapse;border-spacing:0}
+  th,td{padding:10px 12px;border-bottom:1px dashed #203158;vertical-align:top}
+  th{color:#bcd0ff;text-align:left;background:#0e162c;position:sticky;top:0}
+  .kpi{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+  .kpi .chip{background:#0d1a33;border:1px solid #1f2f57;color:#c8d6ff;border-radius:999px;padding:3px 8px;font-size:12px}
+  .muted{color:var(--muted)}
+  .route{counter-reset:step}
+  .route li{list-style:none;margin:10px 0;padding:10px;border:1px dashed #2a3b66;border-radius:12px;background:#0c1429}
+  .route li b::before{counter-increment:step;content:counter(step)'. ';}
+  .addr{font-family:ui-monospace,Menlo,Consolas,monospace;color:#c7d2fe}
+  footer{margin:28px 0 8px;color:#9fb2d9;font-size:13px}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">上海月子会所初步分析报告 · 可视版</div>
+      <div class="pill">AI 初步调查 · 2025-08</div>
+    </header>
+
+    <div class="grid g-3">
+      <div class="card">
+        <h2>研究背景</h2>
+        <p class="muted">围绕虹口区周边 6 家会所，整合公开资料（招聘 JD、价格带、地址、媒体与用户口碑）形成访问前对照底稿；供实地走访时边看边记。</p>
+        <div class="legend" aria-label="评级图例">
+          <span class="tag">评级含义：</span>
+          <div style="margin-top: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span class="badge A">A</span><span class="muted">医疗背书强/透明度高/风险低</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span class="badge B">B</span><span class="muted">条件较好，个别项待核实</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span class="badge C">C</span><span class="muted">信息有限/执行需验证</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="badge D">D</span><span class="muted">透明度低/首访谨慎</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>目标清单</h2>
+        <div class="kpi">
+          <span class="chip">Jinen Xuan（锦恩·萱）</span>
+          <span class="chip">Yueya Wan（月芽湾）</span>
+          <span class="chip">Xing Yaolan（星摇篮）</span>
+          <span class="chip">United Family（和睦家）</span>
+          <span class="chip">Moli Zhihui（茉莉智慧）</span>
+          <span class="chip">Bella ISLA Aiyu（艾屿）</span>
+        </div>
+        <p class="muted">注：价格为 28 天档的用户/媒体参考价；合同与实际套餐以门店为准。</p>
+      </div>
+
+      <div class="card">
+        <h2>访问关注点</h2>
+        <ul class="muted">
+          <li>索要护士长/护士 JD 与执业证样例，确认是否要求公立医院履历</li>
+          <li>查看排班表：宣称的“24h 1v1”是否可落地（夜班/节假日）</li>
+          <li>医生查房频次、急救 SOP、转诊通道</li>
+          <li>价格与条款：退订/改期/隐形收费</li>
+        </ul>
+      </div>
+    </div>
+
+    <section class="card" style="margin-top:16px">
+      <h2>横评总表</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>会所（英文/拼音）</th>
+            <th>地址</th>
+            <th>医疗/护理信息透明度</th>
+            <th>医院履历/执业证</th>
+            <th>医疗背书 / 查房</th>
+            <th>价格带（28天）</th>
+            <th>口碑与风险要点</th>
+            <th>评级</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>United Family（和睦家）</b></td>
+            <td class="addr">长宁区 平塘路699号</td>
+            <td>高（岗位公开、制度完善）</td>
+            <td>明确要求医院经验、注册护士执照</td>
+            <td>医院体系、标准化查房</td>
+            <td>TBD（高）</td>
+            <td>医疗安全系数高，费用偏高</td>
+            <td><span class="badge A">A</span></td>
+          </tr>
+          <tr>
+            <td><b>Moli Zhihui（茉莉智慧）</b></td>
+            <td class="addr">浦东新区 银城中路600弄 中粮海景壹号 5–7号楼</td>
+            <td>中（产康岗位较多）</td>
+            <td>未见硬性“医院履历”字样</td>
+            <td>宣称“智慧/数据化护理”（需核实）</td>
+            <td>¥190k–209k</td>
+            <td>高端口碑+高价，核实性价比</td>
+            <td><span class="badge B">B</span></td>
+          </tr>
+          <tr>
+            <td><b>Jinen Xuan（锦恩·萱）</b></td>
+            <td class="addr">徐汇区 衡山路12号 华邑酒店 2–6楼</td>
+            <td>中（品牌与模式清晰）</td>
+            <td>执业证隐含；医院履历未明示</td>
+            <td>宣称 24h 1v1（到店核实）</td>
+            <td>¥120k–180k</td>
+            <td>高端定位，重验证落地执行</td>
+            <td><span class="badge B">B</span></td>
+          </tr>
+          <tr>
+            <td><b>Bella ISLA Aiyu（艾屿 / SAINT BELLA）</b></td>
+            <td class="addr">长宁区 临虹路7号 阿纳迪酒店 9楼</td>
+            <td>中低（集团信息较多，护理JD少）</td>
+            <td>未见硬性要求</td>
+            <td>宣称 1v1 护理团队</td>
+            <td>高（10万+）</td>
+            <td>奢侈定位，用户实评稀少</td>
+            <td><span class="badge C">C</span></td>
+          </tr>
+          <tr>
+            <td><b>Xing Yaolan（星摇篮）</b></td>
+            <td class="addr">杨浦区 安波路467弄 法朵公寓12楼 1201–1214室</td>
+            <td>低–中（连锁存在感，JD稀少）</td>
+            <td>N/A</td>
+            <td>宣称 1v1 护理（需核实）</td>
+            <td>¥56.9k–57k</td>
+            <td>照片多评论少，合同细则要看</td>
+            <td><span class="badge C">C</span></td>
+          </tr>
+          <tr>
+            <td><b>Yueya Wan（月芽湾）</b></td>
+            <td class="addr">浦东新区 浦东大道1525号 西楼6楼</td>
+            <td>低（护理信息公开少）</td>
+            <td>N/A</td>
+            <td>未知</td>
+            <td>¥58k–64k</td>
+            <td>透明度低，首访谨慎</td>
+            <td><span class="badge D">D</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+      <h2>建议的自驾访问顺序（起点：虹口区 凉城路/广灵四路）</h2>
+      <ol class="route">
+        <li>
+          <b>Xing Yaolan（星摇篮）</b><br>
+          <span class="addr">杨浦区 安波路467弄 法朵公寓12楼 1201–1214室</span><br>
+          <span class="muted">预计 10–15 分钟</span>
+          <a href="https://uri.amap.com/navigation?to=121.5245,31.2594,星摇篮月子会所&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0" target="_blank" style="display: inline-block; margin-top: 8px; padding: 6px 12px; background: var(--accent); color: #0b1020; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">🚗 导航</a>
+        </li>
+        <li>
+          <b>Jinen Xuan（锦恩·萱）</b><br>
+          <span class="addr">徐汇区 衡山路12号 华邑酒店 2–6楼</span><br>
+          <span class="muted">预计 20–25 分钟</span>
+          <a href="https://uri.amap.com/navigation?to=121.4465,31.2089,锦恩萱月子会所&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0" target="_blank" style="display: inline-block; margin-top: 8px; padding: 6px 12px; background: var(--accent); color: #0b1020; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">🚗 导航</a>
+        </li>
+        <li>
+          <b>Bella ISLA Aiyu（艾屿）</b><br>
+          <span class="addr">长宁区 临虹路7号 阿纳迪酒店 9楼</span><br>
+          <span class="muted">预计 15 分钟</span>
+          <a href="https://uri.amap.com/navigation?to=121.4215,31.2189,艾屿月子会所&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0" target="_blank" style="display: inline-block; margin-top: 8px; padding: 6px 12px; background: var(--accent); color: #0b1020; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">🚗 导航</a>
+        </li>
+        <li>
+          <b>United Family（和睦家）</b><br>
+          <span class="addr">长宁区 平塘路699号</span><br>
+          <span class="muted">预计 10 分钟</span>
+          <a href="https://uri.amap.com/navigation?to=121.4085,31.2189,和睦家月子会所&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0" target="_blank" style="display: inline-block; margin-top: 8px; padding: 6px 12px; background: var(--accent); color: #0b1020; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">🚗 导航</a>
+        </li>
+        <li>
+          <b>Moli Zhihui（茉莉智慧）</b><br>
+          <span class="addr">浦东新区 银城中路600弄 中粮海景壹号 5–7号楼</span><br>
+          <span class="muted">预计 20–25 分钟</span>
+          <a href="https://uri.amap.com/navigation?to=121.5085,31.2389,茉莉智慧月子会所&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0" target="_blank" style="display: inline-block; margin-top: 8px; padding: 6px 12px; background: var(--accent); color: #0b1020; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">🚗 导航</a>
+        </li>
+        <li>
+          <b>Yueya Wan（月芽湾）</b><br>
+          <span class="addr">浦东新区 浦东大道1525号 西楼6楼</span><br>
+          <span class="muted">预计 15 分钟</span>
+          <a href="https://uri.amap.com/navigation?to=121.5285,31.2389,月芽湾月子会所&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0" target="_blank" style="display: inline-block; margin-top: 8px; padding: 6px 12px; background: var(--accent); color: #0b1020; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;">🚗 导航</a>
+        </li>
+      </ol>
+      <p class="muted">每家建议预留 40–60 分钟；午间在长宁或徐汇补给休息，避开跨江高峰。</p>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+      <h2>评价雷达图</h2>
+      <p class="muted">基于招聘信息透明度、口碑/风险、价格合理性（数值越高表示越划算）等维度的综合评价。</p>
+      <div style="position: relative; height: 400px; max-width: 600px; margin: 0 auto;">
+        <canvas id="radarChart"></canvas>
+      </div>
+    </section>
+
+
+
+    <footer>说明：本页为 AI 基于公开资料的初步调查，不构成医疗或合同建议。最终选择以你们的实地考察与合同条款为准。</footer>
+    
+    <!-- 开始评分按钮 -->
+    <div style="text-align: center; margin-top: 32px; padding: 20px;">
+      <a href="scoring.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 16px 24px; background: var(--accent); color: #0b1020; text-decoration: none; border-radius: 12px; font-size: 16px; font-weight: 700; box-shadow: 0 8px 24px rgba(122, 162, 255, 0.3); transition: all 0.3s;">
+        📊 开始实地评分
+      </a>
+      <p class="muted" style="margin-top: 12px; font-size: 14px;">点击进入评分页面，记录实地考察数据</p>
+    </div>
+  </div>
+
+  <script>
+    // 雷达图数据
+    const radarData = {
+      labels: ['Recruit Info Transparency', 'Reputation/Risk', 'Price Reasonableness'],
+      datasets: [
+        {
+          label: 'Jinen Xuan（锦恩·萱）',
+          data: [5, 7, 6],
+          borderColor: '#ff9800',
+          backgroundColor: 'rgba(255, 152, 0, 0.2)',
+          borderWidth: 2,
+          pointBackgroundColor: '#ff9800',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#ff9800'
+        },
+        {
+          label: 'Yueya Wan（月芽湾）',
+          data: [0, 5, 8],
+          borderColor: '#795548',
+          backgroundColor: 'rgba(121, 85, 72, 0.2)',
+          borderWidth: 2,
+          pointBackgroundColor: '#795548',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#795548'
+        },
+        {
+          label: 'Xing Yaolan（星摇篮）',
+          data: [0, 5, 8],
+          borderColor: '#f44336',
+          backgroundColor: 'rgba(244, 67, 54, 0.2)',
+          borderWidth: 2,
+          pointBackgroundColor: '#f44336',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#f44336'
+        },
+        {
+          label: 'United Family（和睦家）',
+          data: [9, 8, 5],
+          borderColor: '#e91e63',
+          backgroundColor: 'rgba(233, 30, 99, 0.2)',
+          borderWidth: 2,
+          pointBackgroundColor: '#e91e63',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#e91e63'
+        },
+        {
+          label: 'Moli Zhihui（茉莉智慧）',
+          data: [3, 6, 3],
+          borderColor: '#00bcd4',
+          backgroundColor: 'rgba(0, 188, 212, 0.2)',
+          borderWidth: 2,
+          pointBackgroundColor: '#00bcd4',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#00bcd4'
+        },
+        {
+          label: 'Bella ISLA Aiyu（艾屿）',
+          data: [0, 7, 4],
+          borderColor: '#009688',
+          backgroundColor: 'rgba(0, 150, 136, 0.2)',
+          borderWidth: 2,
+          pointBackgroundColor: '#009688',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#009688'
+        }
+      ]
+    };
+
+    // 雷达图配置
+    const radarConfig = {
+      type: 'radar',
+      data: radarData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              color: '#e8eefc',
+              font: {
+                size: 12
+              },
+              usePointStyle: true,
+              padding: 15
+            }
+          },
+          title: {
+            display: false
+          }
+        },
+        scales: {
+          r: {
+            beginAtZero: true,
+            max: 10,
+            min: 0,
+            ticks: {
+              display: false
+            },
+            grid: {
+              color: 'rgba(159, 178, 217, 0.2)'
+            },
+            angleLines: {
+              color: 'rgba(159, 178, 217, 0.3)'
+            },
+            pointLabels: {
+              color: '#bcd0ff',
+              font: {
+                size: 13,
+                weight: '600'
+              }
+            }
+          }
+        },
+        elements: {
+          point: {
+            radius: 4,
+            hoverRadius: 6
+          }
+        }
+      }
+    };
+
+    // 创建雷达图
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    new Chart(ctx, radarConfig);
+  </script>
+</body>
+</html>

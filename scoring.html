@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>实地评分记录 · 上海月子会所</title>
+<style>
+  :root{
+    --bg:#0b1020; --card:#121a31; --card2:#0e162b; --ink:#e8eefc; --muted:#9fb2d9; --accent:#7aa2ff; --good:#36d399; --warn:#fbbf24; --bad:#f43f5e; --mid:#60a5fa;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0b1020,#0a0f1f);color:var(--ink);font:16px/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Helvetica,Arial,sans-serif}
+  .wrap{max-width:1200px;margin:0 auto;padding:20px}
+  header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:20px}
+  .title{font-size:24px;font-weight:800;letter-spacing:.3px}
+  .pill{font-size:13px;color:#0b1020;background:var(--accent);padding:6px 10px;border-radius:999px}
+  .grid{display:grid;gap:16px}
+  .g-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  @media (max-width:900px){.g-2,.g-3{grid-template-columns:1fr}}
+  .card{background:radial-gradient(1200px 400px at 10% -10%,#1a2550 0%,transparent 40%),linear-gradient(180deg,var(--card),var(--card2));border:1px solid #1c2642;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:18px}
+  h2{font-size:20px;margin:0 0 8px 0}
+  h3{font-size:16px;margin:12px 0 8px 0;color:var(--muted);font-weight:700}
+  .tag{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;font-size:12px;background:#0e1b38;color:var(--muted);border:1px solid #1f2d52}
+  .legend{display:flex;gap:8px;flex-wrap:wrap}
+  .badge{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;font-weight:800}
+  .A{background:rgba(54,211,153,.15);border:1px solid var(--good);color:var(--good)}
+  .B{background:rgba(96,165,250,.15);border:1px solid var(--mid);color:var(--mid)}
+  .C{background:rgba(251,191,36,.15);border:1px solid var(--warn);color:var(--warn)}
+  .D{background:rgba(244,63,94,.15);border:1px solid var(--bad);color:var(--bad)}
+  .muted{color:var(--muted)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;transition:all 0.2s}
+  .btn-primary{background:var(--accent);color:#0b1020}
+  .btn-secondary{background:#1f2d57;color:var(--ink);border:1px solid #2a3b66}
+  .btn-danger{background:var(--bad);color:#fff}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+  .btn:active{transform:translateY(0)}
+  .btn-group{display:flex;gap:8px;flex-wrap:wrap}
+  .score-input{display:flex;align-items:center;gap:12px;margin:12px 0}
+  .score-input label{min-width:120px;font-weight:600}
+  .score-input input[type="range"]{flex:1;height:6px;background:#1f2d57;border-radius:3px;outline:none}
+  .score-input input[type="range"]::-webkit-slider-thumb{appearance:none;width:20px;height:20px;background:var(--accent);border-radius:50%;cursor:pointer}
+  .score-input input[type="range"]::-moz-range-thumb{width:20px;height:20px;background:var(--accent);border-radius:50%;cursor:pointer;border:none}
+  .score-value{min-width:30px;text-align:center;font-weight:700;color:var(--accent)}
+  .notes{width:100%;min-height:80px;background:#0e162b;border:1px solid #1f2d57;border-radius:8px;padding:12px;color:var(--ink);font-family:inherit;resize:vertical}
+  .notes:focus{outline:none;border-color:var(--accent)}
+  .history-item{background:#0e162b;border:1px solid #1f2d57;border-radius:8px;padding:12px;margin:8px 0;cursor:pointer;transition:all 0.2s}
+  .history-item:hover{background:#121a31;border-color:var(--accent)}
+  .history-item.active{background:rgba(122,162,255,.1);border-color:var(--accent)}
+  .history-time{font-size:12px;color:var(--muted);margin-bottom:4px}
+  .history-summary{font-size:14px;color:var(--ink)}
+  .empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+  .empty-state .icon{font-size:48px;margin-bottom:16px}
+  .toast{position:fixed;top:20px;right:20px;background:var(--good);color:#0b1020;padding:12px 16px;border-radius:8px;font-weight:600;z-index:1000;transform:translateX(100%);transition:transform 0.3s}
+  .toast.show{transform:translateX(0)}
+  .toast.error{background:var(--bad);color:#fff}
+  .ranking-item{display:flex;align-items:center;gap:16px;padding:16px;background:#0e162b;border:1px solid #1f2d57;border-radius:12px;margin:8px 0;transition:all 0.2s}
+  .ranking-item:hover{background:#121a31;border-color:var(--accent)}
+  .ranking-item.gold{border-color:#ffd700;background:linear-gradient(135deg,rgba(255,215,0,.1),rgba(255,215,0,.05))}
+  .ranking-item.silver{border-color:#c0c0c0;background:linear-gradient(135deg,rgba(192,192,192,.1),rgba(192,192,192,.05))}
+  .ranking-item.bronze{border-color:#cd7f32;background:linear-gradient(135deg,rgba(205,127,50,.1),rgba(205,127,50,.05))}
+  .rank-number{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;font-weight:800;font-size:18px;flex-shrink:0}
+  .rank-number.gold{background:#ffd700;color:#0b1020}
+  .rank-number.silver{background:#c0c0c0;color:#0b1020}
+  .rank-number.bronze{background:#cd7f32;color:#fff}
+  .rank-number.other{background:#1f2d57;color:var(--ink)}
+  .ranking-info{flex:1}
+  .ranking-title{font-size:16px;font-weight:700;margin-bottom:4px}
+  .ranking-score{font-size:14px;color:var(--muted)}
+  .ranking-details{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .score-tag{background:#0d1a33;border:1px solid #1f2f57;color:#c8d6ff;border-radius:999px;padding:2px 6px;font-size:11px}
+  .score-tag.high{background:rgba(54,211,153,.15);border-color:var(--good);color:var(--good)}
+  .score-tag.medium{background:rgba(96,165,250,.15);border-color:var(--mid);color:var(--mid)}
+  .score-tag.low{background:rgba(244,63,94,.15);border-color:var(--bad);color:var(--bad)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <a href="index.html" class="btn btn-secondary" style="padding: 8px 12px; font-size: 14px;">← 返回报告</a>
+        <div class="title">实地评分记录</div>
+      </div>
+      <div class="pill">实时评分 · 动态雷达图</div>
+    </header>
+
+    <div class="grid g-2">
+      <!-- 评分表单 -->
+      <div class="card">
+        <h2>评分表单</h2>
+        <div style="margin-bottom:16px">
+          <label style="display:block;margin-bottom:8px;font-weight:600;">选择会所：</label>
+          <select id="centerSelect" style="width:100%;padding:8px 12px;background:#0e162b;border:1px solid #1f2d57;border-radius:6px;color:var(--ink);font-size:14px;">
+            <option value="">请选择会所...</option>
+            <option value="Jinen Xuan">Jinen Xuan（锦恩·萱）</option>
+            <option value="Yueya Wan">Yueya Wan（月芽湾）</option>
+            <option value="Xing Yaolan">Xing Yaolan（星摇篮）</option>
+            <option value="United Family">United Family（和睦家）</option>
+            <option value="Moli Zhihui">Moli Zhihui（茉莉智慧）</option>
+            <option value="Bella ISLA Aiyu">Bella ISLA Aiyu（艾屿）</option>
+          </select>
+        </div>
+
+                 <div id="scoreForm" style="display:none;">
+           <div class="score-input">
+             <label>医疗资质透明度：</label>
+             <input type="range" id="medicalScore" min="0" max="10" value="5" step="0.5">
+             <span class="score-value" id="medicalValue">5</span>
+           </div>
+           <div class="score-input">
+             <label>护理团队专业度：</label>
+             <input type="range" id="nursingScore" min="0" max="10" value="5" step="0.5">
+             <span class="score-value" id="nursingValue">5</span>
+           </div>
+           <div class="score-input">
+             <label>环境与硬件质量：</label>
+             <input type="range" id="environmentScore" min="0" max="10" value="5" step="0.5">
+             <span class="score-value" id="environmentValue">5</span>
+           </div>
+           <div class="score-input">
+             <label>月子餐品质：</label>
+             <input type="range" id="foodScore" min="0" max="10" value="5" step="0.5">
+             <span class="score-value" id="foodValue">5</span>
+           </div>
+           <div class="score-input">
+             <label>婴儿护理标准化：</label>
+             <input type="range" id="babyCareScore" min="0" max="10" value="5" step="0.5">
+             <span class="score-value" id="babyCareValue">5</span>
+           </div>
+           <div class="score-input">
+             <label>客服与服务体验：</label>
+             <input type="range" id="serviceScore" min="0" max="10" value="5" step="0.5">
+             <span class="score-value" id="serviceValue">5</span>
+           </div>
+           <div class="score-input">
+             <label>合同透明度：</label>
+             <input type="range" id="contractScore" min="0" max="10" value="5" step="0.5">
+             <span class="score-value" id="contractValue">5</span>
+           </div>
+           <div class="score-input">
+             <label>清洁与卫生：</label>
+             <input type="range" id="cleanlinessScore" min="0" max="10" value="5" step="0.5">
+             <span class="score-value" id="cleanlinessValue">5</span>
+           </div>
+           <div class="score-input">
+             <label>特色服务：</label>
+             <input type="range" id="specialServiceScore" min="0" max="10" value="5" step="0.5">
+             <span class="score-value" id="specialServiceValue">5</span>
+           </div>
+           <div class="score-input">
+             <label>接待印象分：</label>
+             <input type="range" id="receptionScore" min="0" max="10" value="5" step="0.5">
+             <span class="score-value" id="receptionValue">5</span>
+           </div>
+
+          <div style="margin-top:16px;">
+            <label style="display:block;margin-bottom:8px;font-weight:600;">实地观察笔记：</label>
+            <textarea id="notes" class="notes" placeholder="记录实地考察的详细观察..."></textarea>
+          </div>
+
+          <div class="btn-group" style="margin-top:16px;">
+            <button class="btn btn-primary" onclick="saveScore()">💾 保存评分</button>
+            <button class="btn btn-secondary" onclick="resetForm()">🔄 重置表单</button>
+            <button class="btn btn-danger" onclick="undoLast()">↶ 撤销上次</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 实时雷达图 -->
+      <div class="card">
+        <h2>实时雷达图</h2>
+        <div style="position: relative; height: 350px;">
+          <canvas id="radarChart"></canvas>
+        </div>
+        <p class="muted" style="margin-top:12px;font-size:13px;">图表实时反映当前评分数据，支持多会所对比</p>
+      </div>
+    </div>
+
+    <!-- 评分历史 -->
+    <div class="card" style="margin-top:16px;">
+      <h2>评分历史</h2>
+      <div id="historyList">
+        <div class="empty-state">
+          <div class="icon">📝</div>
+          <div>暂无评分记录</div>
+          <div style="font-size:13px;margin-top:8px;">开始评分后，历史记录将显示在这里</div>
+        </div>
+      </div>
+    </div>
+
+         <!-- 当前排名 -->
+     <div class="card" style="margin-top:16px;">
+       <h2>🏆 当前排名</h2>
+       <div id="rankingList">
+         <div class="empty-state">
+           <div class="icon">🏆</div>
+           <div>暂无评分数据</div>
+           <div style="font-size:13px;margin-top:8px;">开始评分后，排名将显示在这里</div>
+         </div>
+       </div>
+     </div>
+
+     <!-- 数据导出 -->
+     <div class="card" style="margin-top:16px;">
+       <h2>数据管理</h2>
+       <div class="btn-group">
+         <button class="btn btn-primary" onclick="exportData()">📤 导出数据</button>
+         <button class="btn btn-secondary" onclick="importData()">📥 导入数据</button>
+         <button class="btn btn-danger" onclick="clearAllData()">🗑️ 清空所有</button>
+       </div>
+       <input type="file" id="fileInput" accept=".json" style="display:none;" onchange="handleFileImport(event)">
+     </div>
+  </div>
+
+  <!-- 提示框 -->
+  <div id="toast" class="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // 全局变量
+    let scoreHistory = [];
+    let currentChart = null;
+    let selectedCenter = '';
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      loadData();
+      initChart();
+      setupEventListeners();
+    });
+
+    // 设置事件监听器
+    function setupEventListeners() {
+      document.getElementById('centerSelect').addEventListener('change', function(e) {
+        selectedCenter = e.target.value;
+        if (selectedCenter) {
+          document.getElementById('scoreForm').style.display = 'block';
+        } else {
+          document.getElementById('scoreForm').style.display = 'none';
+        }
+      });
+
+             // 滑块事件
+       ['medicalScore', 'nursingScore', 'environmentScore', 'foodScore', 'babyCareScore', 'serviceScore', 'contractScore', 'cleanlinessScore', 'specialServiceScore', 'receptionScore'].forEach(id => {
+         const slider = document.getElementById(id);
+         const value = document.getElementById(id.replace('Score', 'Value'));
+         slider.addEventListener('input', function() {
+           value.textContent = this.value;
+           updateChart();
+         });
+       });
+    }
+
+    // 初始化雷达图
+    function initChart() {
+      const ctx = document.getElementById('radarChart').getContext('2d');
+      currentChart = new Chart(ctx, {
+        type: 'radar',
+                 data: {
+           labels: ['医疗资质透明度', '护理团队专业度', '环境与硬件质量', '月子餐品质', '婴儿护理标准化', '客服与服务体验', '合同透明度', '清洁与卫生', '特色服务', '接待印象分'],
+           datasets: []
+         },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                color: '#e8eefc',
+                font: { size: 12 },
+                usePointStyle: true,
+                padding: 15
+              }
+            }
+          },
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 10,
+              min: 0,
+              ticks: { display: false },
+              grid: { color: 'rgba(159, 178, 217, 0.2)' },
+              angleLines: { color: 'rgba(159, 178, 217, 0.3)' },
+              pointLabels: {
+                color: '#bcd0ff',
+                font: { size: 13, weight: '600' }
+              }
+            }
+          },
+          elements: {
+            point: { radius: 4, hoverRadius: 6 }
+          }
+        }
+      });
+    }
+
+    // 更新雷达图
+    function updateChart() {
+      if (!currentChart) return;
+
+      const datasets = [];
+      const colors = ['#ff9800', '#795548', '#f44336', '#e91e63', '#00bcd4', '#009688'];
+
+      // 添加历史数据
+      const centerData = {};
+      scoreHistory.forEach(record => {
+        if (!centerData[record.center]) {
+          centerData[record.center] = record;
+        }
+      });
+
+             Object.values(centerData).forEach((record, index) => {
+         datasets.push({
+           label: record.center,
+           data: [record.medical, record.nursing, record.environment, record.food, record.babyCare, record.service, record.contract, record.cleanliness, record.specialService, record.reception],
+           borderColor: colors[index % colors.length],
+           backgroundColor: colors[index % colors.length] + '20',
+           borderWidth: 2,
+           pointBackgroundColor: colors[index % colors.length],
+           pointBorderColor: '#fff',
+           pointHoverBackgroundColor: '#fff',
+           pointHoverBorderColor: colors[index % colors.length]
+         });
+       });
+
+             // 添加当前编辑的数据
+       if (selectedCenter && document.getElementById('scoreForm').style.display !== 'none') {
+         const currentData = {
+           medical: parseFloat(document.getElementById('medicalScore').value),
+           nursing: parseFloat(document.getElementById('nursingScore').value),
+           environment: parseFloat(document.getElementById('environmentScore').value),
+           food: parseFloat(document.getElementById('foodScore').value),
+           babyCare: parseFloat(document.getElementById('babyCareScore').value),
+           service: parseFloat(document.getElementById('serviceScore').value),
+           contract: parseFloat(document.getElementById('contractScore').value),
+           cleanliness: parseFloat(document.getElementById('cleanlinessScore').value),
+           specialService: parseFloat(document.getElementById('specialServiceScore').value),
+           reception: parseFloat(document.getElementById('receptionScore').value)
+         };
+
+         datasets.push({
+           label: selectedCenter + ' (当前)',
+           data: [currentData.medical, currentData.nursing, currentData.environment, currentData.food, currentData.babyCare, currentData.service, currentData.contract, currentData.cleanliness, currentData.specialService, currentData.reception],
+           borderColor: '#7aa2ff',
+           backgroundColor: '#7aa2ff20',
+           borderWidth: 3,
+           borderDash: [5, 5],
+           pointBackgroundColor: '#7aa2ff',
+           pointBorderColor: '#fff',
+           pointHoverBackgroundColor: '#fff',
+           pointHoverBorderColor: '#7aa2ff'
+         });
+       }
+
+      currentChart.data.datasets = datasets;
+      currentChart.update();
+    }
+
+    // 保存评分
+    function saveScore() {
+      if (!selectedCenter) {
+        showToast('请先选择会所', 'error');
+        return;
+      }
+
+             const score = {
+         id: Date.now(),
+         center: selectedCenter,
+         medical: parseFloat(document.getElementById('medicalScore').value),
+         nursing: parseFloat(document.getElementById('nursingScore').value),
+         environment: parseFloat(document.getElementById('environmentScore').value),
+         food: parseFloat(document.getElementById('foodScore').value),
+         babyCare: parseFloat(document.getElementById('babyCareScore').value),
+         service: parseFloat(document.getElementById('serviceScore').value),
+         contract: parseFloat(document.getElementById('contractScore').value),
+         cleanliness: parseFloat(document.getElementById('cleanlinessScore').value),
+         specialService: parseFloat(document.getElementById('specialServiceScore').value),
+         reception: parseFloat(document.getElementById('receptionScore').value),
+         notes: document.getElementById('notes').value,
+         timestamp: new Date().toISOString()
+       };
+
+      scoreHistory.push(score);
+             saveData();
+       updateHistoryDisplay();
+       updateRankingDisplay();
+       updateChart();
+       resetForm();
+       showToast('评分已保存');
+    }
+
+         // 重置表单
+     function resetForm() {
+       const scores = ['medical', 'nursing', 'environment', 'food', 'babyCare', 'service', 'contract', 'cleanliness', 'specialService', 'reception'];
+       scores.forEach(score => {
+         document.getElementById(score + 'Score').value = 5;
+         document.getElementById(score + 'Value').textContent = '5';
+       });
+       document.getElementById('notes').value = '';
+       updateChart();
+     }
+
+    // 撤销上次操作
+    function undoLast() {
+      if (scoreHistory.length === 0) {
+        showToast('没有可撤销的记录', 'error');
+        return;
+      }
+
+             scoreHistory.pop();
+       saveData();
+       updateHistoryDisplay();
+       updateRankingDisplay();
+       updateChart();
+       showToast('已撤销上次评分');
+    }
+
+         // 更新历史显示
+     function updateHistoryDisplay() {
+       const historyList = document.getElementById('historyList');
+       
+       if (scoreHistory.length === 0) {
+         historyList.innerHTML = `
+           <div class="empty-state">
+             <div class="icon">📝</div>
+             <div>暂无评分记录</div>
+             <div style="font-size:13px;margin-top:8px;">开始评分后，历史记录将显示在这里</div>
+           </div>
+         `;
+         return;
+       }
+
+       const historyHTML = scoreHistory.slice().reverse().map(record => {
+         const date = new Date(record.timestamp);
+         const timeStr = date.toLocaleString('zh-CN');
+         const avgScore = ((record.medical + record.nursing + record.environment + record.food + record.babyCare + record.service + record.contract + record.cleanliness + record.specialService + record.reception) / 10).toFixed(1);
+         
+         return `
+           <div class="history-item" onclick="loadRecord(${record.id})">
+             <div class="history-time">${timeStr}</div>
+             <div class="history-summary">
+               <strong>${record.center}</strong> - 平均分: ${avgScore} 
+               (医疗:${record.medical} | 护理:${record.nursing} | 环境:${record.environment} | 餐食:${record.food} | 婴儿护理:${record.babyCare})
+             </div>
+             ${record.notes ? `<div style="font-size:12px;color:var(--muted);margin-top:4px;">${record.notes.substring(0, 50)}${record.notes.length > 50 ? '...' : ''}</div>` : ''}
+           </div>
+         `;
+       }).join('');
+
+       historyList.innerHTML = historyHTML;
+     }
+
+     // 更新排名显示
+     function updateRankingDisplay() {
+       const rankingList = document.getElementById('rankingList');
+       
+       if (scoreHistory.length === 0) {
+         rankingList.innerHTML = `
+           <div class="empty-state">
+             <div class="icon">🏆</div>
+             <div>暂无评分数据</div>
+             <div style="font-size:13px;margin-top:8px;">开始评分后，排名将显示在这里</div>
+           </div>
+         `;
+         return;
+       }
+
+       // 计算每个会所的最新评分
+       const centerScores = {};
+       scoreHistory.forEach(record => {
+         if (!centerScores[record.center] || record.timestamp > centerScores[record.center].timestamp) {
+           centerScores[record.center] = record;
+         }
+       });
+
+       // 计算总分并排序
+       const rankings = Object.values(centerScores).map(record => {
+         const totalScore = record.medical + record.nursing + record.environment + record.food + record.babyCare + 
+                           record.service + record.contract + record.cleanliness + record.specialService + record.reception;
+         const avgScore = (totalScore / 10).toFixed(1);
+         
+         return {
+           ...record,
+           totalScore,
+           avgScore
+         };
+       }).sort((a, b) => b.totalScore - a.totalScore);
+
+       // 生成排名HTML
+       const rankingHTML = rankings.map((record, index) => {
+         const rank = index + 1;
+         let rankClass = 'other';
+         let itemClass = '';
+         
+         if (rank === 1) {
+           rankClass = 'gold';
+           itemClass = 'gold';
+         } else if (rank === 2) {
+           rankClass = 'silver';
+           itemClass = 'silver';
+         } else if (rank === 3) {
+           rankClass = 'bronze';
+           itemClass = 'bronze';
+         }
+
+         // 计算各维度得分情况
+         const scores = [
+           { name: '医疗', score: record.medical },
+           { name: '护理', score: record.nursing },
+           { name: '环境', score: record.environment },
+           { name: '餐食', score: record.food },
+           { name: '婴儿护理', score: record.babyCare },
+           { name: '服务', score: record.service },
+           { name: '合同', score: record.contract },
+           { name: '卫生', score: record.cleanliness },
+           { name: '特色', score: record.specialService },
+           { name: '接待', score: record.reception }
+         ];
+
+         const scoreTags = scores.map(item => {
+           let tagClass = 'medium';
+           if (item.score >= 8) tagClass = 'high';
+           else if (item.score <= 5) tagClass = 'low';
+           
+           return `<span class="score-tag ${tagClass}">${item.name}:${item.score}</span>`;
+         }).join('');
+
+         return `
+           <div class="ranking-item ${itemClass}" onclick="loadRecord(${record.id})">
+             <div class="rank-number ${rankClass}">${rank}</div>
+             <div class="ranking-info">
+               <div class="ranking-title">${record.center}</div>
+               <div class="ranking-score">总分: ${record.totalScore} | 平均分: ${record.avgScore}</div>
+               <div class="ranking-details">
+                 ${scoreTags}
+               </div>
+             </div>
+           </div>
+         `;
+       }).join('');
+
+       rankingList.innerHTML = rankingHTML;
+     }
+
+    // 加载记录到表单
+    function loadRecord(id) {
+      const record = scoreHistory.find(r => r.id === id);
+      if (!record) return;
+
+      selectedCenter = record.center;
+      document.getElementById('centerSelect').value = record.center;
+      document.getElementById('scoreForm').style.display = 'block';
+      
+             document.getElementById('medicalScore').value = record.medical;
+       document.getElementById('nursingScore').value = record.nursing;
+       document.getElementById('environmentScore').value = record.environment;
+       document.getElementById('foodScore').value = record.food;
+       document.getElementById('babyCareScore').value = record.babyCare;
+       document.getElementById('serviceScore').value = record.service;
+       document.getElementById('contractScore').value = record.contract;
+       document.getElementById('cleanlinessScore').value = record.cleanliness;
+       document.getElementById('specialServiceScore').value = record.specialService;
+       document.getElementById('receptionScore').value = record.reception;
+       document.getElementById('medicalValue').textContent = record.medical;
+       document.getElementById('nursingValue').textContent = record.nursing;
+       document.getElementById('environmentValue').textContent = record.environment;
+       document.getElementById('foodValue').textContent = record.food;
+       document.getElementById('babyCareValue').textContent = record.babyCare;
+       document.getElementById('serviceValue').textContent = record.service;
+       document.getElementById('contractValue').textContent = record.contract;
+       document.getElementById('cleanlinessValue').textContent = record.cleanliness;
+       document.getElementById('specialServiceValue').textContent = record.specialService;
+       document.getElementById('receptionValue').textContent = record.reception;
+      document.getElementById('notes').value = record.notes || '';
+      
+      updateChart();
+    }
+
+    // 导出数据
+    function exportData() {
+      const dataStr = JSON.stringify(scoreHistory, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `月子会所评分记录_${new Date().toISOString().split('T')[0]}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+      showToast('数据已导出');
+    }
+
+    // 导入数据
+    function importData() {
+      document.getElementById('fileInput').click();
+    }
+
+    // 处理文件导入
+    function handleFileImport(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const importedData = JSON.parse(e.target.result);
+                     scoreHistory = importedData;
+           saveData();
+           updateHistoryDisplay();
+           updateRankingDisplay();
+           updateChart();
+           showToast('数据导入成功');
+        } catch (error) {
+          showToast('文件格式错误', 'error');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    // 清空所有数据
+    function clearAllData() {
+      if (confirm('确定要清空所有评分记录吗？此操作不可撤销。')) {
+                 scoreHistory = [];
+         saveData();
+         updateHistoryDisplay();
+         updateRankingDisplay();
+         updateChart();
+         showToast('所有数据已清空');
+      }
+    }
+
+    // 保存到本地存储
+    function saveData() {
+      localStorage.setItem('maternityCenterScores', JSON.stringify(scoreHistory));
+    }
+
+    // 从本地存储加载
+    function loadData() {
+      const saved = localStorage.getItem('maternityCenterScores');
+      if (saved) {
+                 try {
+           scoreHistory = JSON.parse(saved);
+           updateHistoryDisplay();
+           updateRankingDisplay();
+         } catch (error) {
+           console.error('加载数据失败:', error);
+         }
+      }
+    }
+
+    // 显示提示
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type}`;
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+</body>
+</html> 
