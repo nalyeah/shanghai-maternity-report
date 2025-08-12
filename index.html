@@ -43,11 +43,10 @@
   @media (min-width:769px){
     .mobile-cards{display:none}
   }
-  .mobile-cards{display:none}
   .center-card{background:#0e162b;border:1px solid #1f2d57;border-radius:12px;padding:16px;margin:12px 0}
-  .center-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .center-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1f2d57}
   .center-header h3{font-size:16px;margin:0;color:var(--ink)}
-  .center-info p{margin:8px 0;font-size:14px;line-height:1.4}
+  .center-info p{margin:6px 0;font-size:14px;line-height:1.4}
   .center-info strong{color:#bcd0ff}
   .kpi{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
   .kpi .chip{background:#0d1a33;border:1px solid #1f2f57;color:#c8d6ff;border-radius:999px;padding:3px 8px;font-size:12px}
@@ -125,7 +124,10 @@
 
     <section class="card" style="margin-top:16px">
       <h2>横评总表</h2>
-      <table>
+      
+      <!-- 桌面端表格 -->
+      <div class="desktop-table">
+        <table>
         <thead>
           <tr>
             <th>会所（英文/拼音）</th>
@@ -200,7 +202,101 @@
             <td><span class="badge D">D</span></td>
           </tr>
         </tbody>
-      </table>
+        </table>
+      </div>
+
+      <!-- 移动端卡片 -->
+      <div class="mobile-cards">
+        <div class="center-card">
+          <div class="center-header">
+            <h3>United Family（和睦家）</h3>
+            <span class="badge A">A</span>
+          </div>
+          <div class="center-info">
+            <p><strong>地址：</strong>长宁区 平塘路699号</p>
+            <p><strong>透明度：</strong>高（岗位公开、制度完善）</p>
+            <p><strong>执业证：</strong>明确要求医院经验、注册护士执照</p>
+            <p><strong>医疗背书：</strong>医院体系、标准化查房</p>
+            <p><strong>价格：</strong>TBD（高）</p>
+            <p><strong>要点：</strong>医疗安全系数高，费用偏高</p>
+          </div>
+        </div>
+
+        <div class="center-card">
+          <div class="center-header">
+            <h3>Moli Zhihui（茉莉智慧）</h3>
+            <span class="badge B">B</span>
+          </div>
+          <div class="center-info">
+            <p><strong>地址：</strong>浦东新区 银城中路600弄 中粮海景壹号 5–7号楼</p>
+            <p><strong>透明度：</strong>中（产康岗位较多）</p>
+            <p><strong>执业证：</strong>未见硬性"医院履历"字样</p>
+            <p><strong>医疗背书：</strong>宣称"智慧/数据化护理"（需核实）</p>
+            <p><strong>价格：</strong>¥190k–209k</p>
+            <p><strong>要点：</strong>高端口碑+高价，核实性价比</p>
+          </div>
+        </div>
+
+        <div class="center-card">
+          <div class="center-header">
+            <h3>Jinen Xuan（锦恩·萱）</h3>
+            <span class="badge B">B</span>
+          </div>
+          <div class="center-info">
+            <p><strong>地址：</strong>徐汇区 衡山路12号 华邑酒店 2–6楼</p>
+            <p><strong>透明度：</strong>中（品牌与模式清晰）</p>
+            <p><strong>执业证：</strong>执业证隐含；医院履历未明示</p>
+            <p><strong>医疗背书：</strong>宣称 24h 1v1（到店核实）</p>
+            <p><strong>价格：</strong>¥120k–180k</p>
+            <p><strong>要点：</strong>高端定位，重验证落地执行</p>
+          </div>
+        </div>
+
+        <div class="center-card">
+          <div class="center-header">
+            <h3>Bella ISLA Aiyu（艾屿）</h3>
+            <span class="badge C">C</span>
+          </div>
+          <div class="center-info">
+            <p><strong>地址：</strong>长宁区 临虹路7号 阿纳迪酒店 9楼</p>
+            <p><strong>透明度：</strong>中低（集团信息较多，护理JD少）</p>
+            <p><strong>执业证：</strong>未见硬性要求</p>
+            <p><strong>医疗背书：</strong>宣称 1v1 护理团队</p>
+            <p><strong>价格：</strong>高（10万+）</p>
+            <p><strong>要点：</strong>奢侈定位，用户实评稀少</p>
+          </div>
+        </div>
+
+        <div class="center-card">
+          <div class="center-header">
+            <h3>Xing Yaolan（星摇篮）</h3>
+            <span class="badge C">C</span>
+          </div>
+          <div class="center-info">
+            <p><strong>地址：</strong>杨浦区 安波路467弄 法朵公寓12楼 1201–1214室</p>
+            <p><strong>透明度：</strong>低–中（连锁存在感，JD稀少）</p>
+            <p><strong>执业证：</strong>N/A</p>
+            <p><strong>医疗背书：</strong>宣称 1v1 护理（需核实）</p>
+            <p><strong>价格：</strong>¥56.9k–57k</p>
+            <p><strong>要点：</strong>照片多评论少，合同细则要看</p>
+          </div>
+        </div>
+
+        <div class="center-card">
+          <div class="center-header">
+            <h3>Yueya Wan（月芽湾）</h3>
+            <span class="badge D">D</span>
+          </div>
+          <div class="center-info">
+            <p><strong>地址：</strong>浦东新区 浦东大道1525号 西楼6楼</p>
+            <p><strong>透明度：</strong>低（护理信息公开少）</p>
+            <p><strong>执业证：</strong>N/A</p>
+            <p><strong>医疗背书：</strong>未知</p>
+            <p><strong>价格：</strong>¥58k–64k</p>
+            <p><strong>要点：</strong>透明度低，首访谨慎</p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="card" style="margin-top:16px">

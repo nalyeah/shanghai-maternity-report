@@ -38,13 +38,17 @@
   .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
   .btn:active{transform:translateY(0)}
   .btn-group{display:flex;gap:8px;flex-wrap:wrap}
+  @media (max-width:768px){
+    .btn-group{flex-direction:column}
+    .btn{justify-content:center}
+    .card div[style*="height: 350px"]{height: 300px !important}
+  }
   .score-input{display:flex;align-items:center;gap:12px;margin:12px 0}
   .score-input label{min-width:120px;font-weight:600}
   @media (max-width:768px){
     .score-input{flex-direction:column;align-items:stretch;gap:8px}
     .score-input label{min-width:auto;font-size:14px}
     .score-input input[type="range"]{width:100%}
-    .score-value{text-align:center;margin-top:4px}
   }
   .score-input input[type="range"]{flex:1;height:6px;background:#1f2d57;border-radius:3px;outline:none}
   .score-input input[type="range"]::-webkit-slider-thumb{appearance:none;width:20px;height:20px;background:var(--accent);border-radius:50%;cursor:pointer}
