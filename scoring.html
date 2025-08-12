@@ -11,10 +11,8 @@
   *{box-sizing:border-box}
   body{margin:0;background:linear-gradient(180deg,#0b1020,#0a0f1f);color:var(--ink);font:16px/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Helvetica,Arial,sans-serif}
   .wrap{max-width:1200px;margin:0 auto;padding:20px}
-  @media (max-width:768px){.wrap{padding:12px}}
   header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:20px}
   .title{font-size:24px;font-weight:800;letter-spacing:.3px}
-  @media (max-width:768px){.title{font-size:20px}}
   .pill{font-size:13px;color:#0b1020;background:var(--accent);padding:6px 10px;border-radius:999px}
   .grid{display:grid;gap:16px}
   .g-2{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -38,18 +36,8 @@
   .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
   .btn:active{transform:translateY(0)}
   .btn-group{display:flex;gap:8px;flex-wrap:wrap}
-  @media (max-width:768px){
-    .btn-group{flex-direction:column}
-    .btn{justify-content:center}
-    .card div[style*="height: 350px"]{height: 300px !important}
-  }
   .score-input{display:flex;align-items:center;gap:12px;margin:12px 0}
   .score-input label{min-width:120px;font-weight:600}
-  @media (max-width:768px){
-    .score-input{flex-direction:column;align-items:stretch;gap:8px}
-    .score-input label{min-width:auto;font-size:14px}
-    .score-input input[type="range"]{width:100%}
-  }
   .score-input input[type="range"]{flex:1;height:6px;background:#1f2d57;border-radius:3px;outline:none}
   .score-input input[type="range"]::-webkit-slider-thumb{appearance:none;width:20px;height:20px;background:var(--accent);border-radius:50%;cursor:pointer}
   .score-input input[type="range"]::-moz-range-thumb{width:20px;height:20px;background:var(--accent);border-radius:50%;cursor:pointer;border:none}
@@ -115,11 +103,6 @@
 
                  <div id="scoreForm" style="display:none;">
            <div class="score-input">
-             <label>医疗资质透明度：</label>
-             <input type="range" id="medicalScore" min="0" max="10" value="5" step="0.5">
-             <span class="score-value" id="medicalValue">5</span>
-           </div>
-           <div class="score-input">
              <label>护理团队专业度：</label>
              <input type="range" id="nursingScore" min="0" max="10" value="5" step="0.5">
              <span class="score-value" id="nursingValue">5</span>
@@ -130,12 +113,17 @@
              <span class="score-value" id="environmentValue">5</span>
            </div>
            <div class="score-input">
-             <label>月子餐品质：</label>
+             <label>医疗实力/对接度：</label>
+             <input type="range" id="medicalScore" min="0" max="10" value="5" step="0.5">
+             <span class="score-value" id="medicalValue">5</span>
+           </div>
+           <div class="score-input">
+             <label>月子餐与营养管理：</label>
              <input type="range" id="foodScore" min="0" max="10" value="5" step="0.5">
              <span class="score-value" id="foodValue">5</span>
            </div>
            <div class="score-input">
-             <label>婴儿护理标准化：</label>
+             <label>婴儿护理与标准化程度：</label>
              <input type="range" id="babyCareScore" min="0" max="10" value="5" step="0.5">
              <span class="score-value" id="babyCareValue">5</span>
            </div>
@@ -145,22 +133,22 @@
              <span class="score-value" id="serviceValue">5</span>
            </div>
            <div class="score-input">
-             <label>合同透明度：</label>
-             <input type="range" id="contractScore" min="0" max="10" value="5" step="0.5">
-             <span class="score-value" id="contractValue">5</span>
-           </div>
-           <div class="score-input">
              <label>清洁与卫生：</label>
              <input type="range" id="cleanlinessScore" min="0" max="10" value="5" step="0.5">
              <span class="score-value" id="cleanlinessValue">5</span>
            </div>
            <div class="score-input">
-             <label>特色服务：</label>
+             <label>拥挤度与私密性：</label>
+             <input type="range" id="crowdingScore" min="0" max="10" value="5" step="0.5">
+             <span class="score-value" id="crowdingValue">5</span>
+           </div>
+           <div class="score-input">
+             <label>特色服务与附加价值：</label>
              <input type="range" id="specialServiceScore" min="0" max="10" value="5" step="0.5">
              <span class="score-value" id="specialServiceValue">5</span>
            </div>
            <div class="score-input">
-             <label>接待印象分：</label>
+             <label>产妇综合印象：</label>
              <input type="range" id="receptionScore" min="0" max="10" value="5" step="0.5">
              <span class="score-value" id="receptionValue">5</span>
            </div>
@@ -262,7 +250,7 @@
       });
 
              // 滑块事件
-       ['medicalScore', 'nursingScore', 'environmentScore', 'foodScore', 'babyCareScore', 'serviceScore', 'contractScore', 'cleanlinessScore', 'specialServiceScore', 'receptionScore'].forEach(id => {
+       ['nursingScore', 'environmentScore', 'medicalScore', 'foodScore', 'babyCareScore', 'serviceScore', 'cleanlinessScore', 'crowdingScore', 'specialServiceScore', 'receptionScore'].forEach(id => {
          const slider = document.getElementById(id);
          const value = document.getElementById(id.replace('Score', 'Value'));
          slider.addEventListener('input', function() {
@@ -278,7 +266,7 @@
       currentChart = new Chart(ctx, {
         type: 'radar',
                  data: {
-           labels: ['医疗资质透明度', '护理团队专业度', '环境与硬件质量', '月子餐品质', '婴儿护理标准化', '客服与服务体验', '合同透明度', '清洁与卫生', '特色服务', '接待印象分'],
+           labels: ['护理团队专业度', '环境与硬件质量', '医疗实力/对接度', '月子餐与营养管理', '婴儿护理与标准化程度', '客服与服务体验', '清洁与卫生', '拥挤度与私密性', '特色服务与附加价值', '产妇综合印象'],
            datasets: []
          },
         options: {
@@ -334,7 +322,7 @@
              Object.values(centerData).forEach((record, index) => {
          datasets.push({
            label: record.center,
-           data: [record.medical, record.nursing, record.environment, record.food, record.babyCare, record.service, record.contract, record.cleanliness, record.specialService, record.reception],
+           data: [record.nursing, record.environment, record.medical, record.food, record.babyCare, record.service, record.cleanliness, record.crowding, record.specialService, record.reception],
            borderColor: colors[index % colors.length],
            backgroundColor: colors[index % colors.length] + '20',
            borderWidth: 2,
@@ -348,21 +336,21 @@
              // 添加当前编辑的数据
        if (selectedCenter && document.getElementById('scoreForm').style.display !== 'none') {
          const currentData = {
-           medical: parseFloat(document.getElementById('medicalScore').value),
            nursing: parseFloat(document.getElementById('nursingScore').value),
            environment: parseFloat(document.getElementById('environmentScore').value),
+           medical: parseFloat(document.getElementById('medicalScore').value),
            food: parseFloat(document.getElementById('foodScore').value),
            babyCare: parseFloat(document.getElementById('babyCareScore').value),
            service: parseFloat(document.getElementById('serviceScore').value),
-           contract: parseFloat(document.getElementById('contractScore').value),
            cleanliness: parseFloat(document.getElementById('cleanlinessScore').value),
+           crowding: parseFloat(document.getElementById('crowdingScore').value),
            specialService: parseFloat(document.getElementById('specialServiceScore').value),
            reception: parseFloat(document.getElementById('receptionScore').value)
          };
 
          datasets.push({
            label: selectedCenter + ' (当前)',
-           data: [currentData.medical, currentData.nursing, currentData.environment, currentData.food, currentData.babyCare, currentData.service, currentData.contract, currentData.cleanliness, currentData.specialService, currentData.reception],
+           data: [currentData.nursing, currentData.environment, currentData.medical, currentData.food, currentData.babyCare, currentData.service, currentData.cleanliness, currentData.crowding, currentData.specialService, currentData.reception],
            borderColor: '#7aa2ff',
            backgroundColor: '#7aa2ff20',
            borderWidth: 3,
@@ -388,14 +376,14 @@
              const score = {
          id: Date.now(),
          center: selectedCenter,
-         medical: parseFloat(document.getElementById('medicalScore').value),
          nursing: parseFloat(document.getElementById('nursingScore').value),
          environment: parseFloat(document.getElementById('environmentScore').value),
+         medical: parseFloat(document.getElementById('medicalScore').value),
          food: parseFloat(document.getElementById('foodScore').value),
          babyCare: parseFloat(document.getElementById('babyCareScore').value),
          service: parseFloat(document.getElementById('serviceScore').value),
-         contract: parseFloat(document.getElementById('contractScore').value),
          cleanliness: parseFloat(document.getElementById('cleanlinessScore').value),
+         crowding: parseFloat(document.getElementById('crowdingScore').value),
          specialService: parseFloat(document.getElementById('specialServiceScore').value),
          reception: parseFloat(document.getElementById('receptionScore').value),
          notes: document.getElementById('notes').value,
@@ -413,7 +401,7 @@
 
          // 重置表单
      function resetForm() {
-       const scores = ['medical', 'nursing', 'environment', 'food', 'babyCare', 'service', 'contract', 'cleanliness', 'specialService', 'reception'];
+       const scores = ['nursing', 'environment', 'medical', 'food', 'babyCare', 'service', 'cleanliness', 'crowding', 'specialService', 'reception'];
        scores.forEach(score => {
          document.getElementById(score + 'Score').value = 5;
          document.getElementById(score + 'Value').textContent = '5';
@@ -455,14 +443,14 @@
        const historyHTML = scoreHistory.slice().reverse().map(record => {
          const date = new Date(record.timestamp);
          const timeStr = date.toLocaleString('zh-CN');
-         const avgScore = ((record.medical + record.nursing + record.environment + record.food + record.babyCare + record.service + record.contract + record.cleanliness + record.specialService + record.reception) / 10).toFixed(1);
+         const avgScore = ((record.nursing + record.environment + record.medical + record.food + record.babyCare + record.service + record.cleanliness + record.crowding + record.specialService + record.reception) / 10).toFixed(1);
          
          return `
            <div class="history-item" onclick="loadRecord(${record.id})">
              <div class="history-time">${timeStr}</div>
              <div class="history-summary">
                <strong>${record.center}</strong> - 平均分: ${avgScore} 
-               (医疗:${record.medical} | 护理:${record.nursing} | 环境:${record.environment} | 餐食:${record.food} | 婴儿护理:${record.babyCare})
+               (护理:${record.nursing} | 环境:${record.environment} | 医疗:${record.medical} | 餐食:${record.food} | 婴儿护理:${record.babyCare})
              </div>
              ${record.notes ? `<div style="font-size:12px;color:var(--muted);margin-top:4px;">${record.notes.substring(0, 50)}${record.notes.length > 50 ? '...' : ''}</div>` : ''}
            </div>
@@ -497,8 +485,8 @@
 
        // 计算总分并排序
        const rankings = Object.values(centerScores).map(record => {
-         const totalScore = record.medical + record.nursing + record.environment + record.food + record.babyCare + 
-                           record.service + record.contract + record.cleanliness + record.specialService + record.reception;
+         const totalScore = record.nursing + record.environment + record.medical + record.food + record.babyCare + 
+                           record.service + record.cleanliness + record.crowding + record.specialService + record.reception;
          const avgScore = (totalScore / 10).toFixed(1);
          
          return {
@@ -527,16 +515,16 @@
 
          // 计算各维度得分情况
          const scores = [
-           { name: '医疗', score: record.medical },
            { name: '护理', score: record.nursing },
            { name: '环境', score: record.environment },
+           { name: '医疗', score: record.medical },
            { name: '餐食', score: record.food },
            { name: '婴儿护理', score: record.babyCare },
            { name: '服务', score: record.service },
-           { name: '合同', score: record.contract },
            { name: '卫生', score: record.cleanliness },
+           { name: '拥挤度', score: record.crowding },
            { name: '特色', score: record.specialService },
-           { name: '接待', score: record.reception }
+           { name: '印象', score: record.reception }
          ];
 
          const scoreTags = scores.map(item => {
@@ -573,24 +561,24 @@
       document.getElementById('centerSelect').value = record.center;
       document.getElementById('scoreForm').style.display = 'block';
       
-             document.getElementById('medicalScore').value = record.medical;
-       document.getElementById('nursingScore').value = record.nursing;
+             document.getElementById('nursingScore').value = record.nursing;
        document.getElementById('environmentScore').value = record.environment;
+       document.getElementById('medicalScore').value = record.medical;
        document.getElementById('foodScore').value = record.food;
        document.getElementById('babyCareScore').value = record.babyCare;
        document.getElementById('serviceScore').value = record.service;
-       document.getElementById('contractScore').value = record.contract;
        document.getElementById('cleanlinessScore').value = record.cleanliness;
+       document.getElementById('crowdingScore').value = record.crowding || 5; // 兼容旧数据
        document.getElementById('specialServiceScore').value = record.specialService;
        document.getElementById('receptionScore').value = record.reception;
-       document.getElementById('medicalValue').textContent = record.medical;
        document.getElementById('nursingValue').textContent = record.nursing;
        document.getElementById('environmentValue').textContent = record.environment;
+       document.getElementById('medicalValue').textContent = record.medical;
        document.getElementById('foodValue').textContent = record.food;
        document.getElementById('babyCareValue').textContent = record.babyCare;
        document.getElementById('serviceValue').textContent = record.service;
-       document.getElementById('contractValue').textContent = record.contract;
        document.getElementById('cleanlinessValue').textContent = record.cleanliness;
+       document.getElementById('crowdingValue').textContent = record.crowding || 5; // 兼容旧数据
        document.getElementById('specialServiceValue').textContent = record.specialService;
        document.getElementById('receptionValue').textContent = record.reception;
       document.getElementById('notes').value = record.notes || '';

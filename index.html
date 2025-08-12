@@ -11,10 +11,8 @@
   *{box-sizing:border-box}
   body{margin:0;background:linear-gradient(180deg,#0b1020,#0a0f1f);color:var(--ink);font:16px/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Helvetica,Arial,sans-serif}
   .wrap{max-width:1100px;margin:0 auto;padding:32px}
-  @media (max-width:768px){.wrap{padding:16px}}
   header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:20px}
   .title{font-size:28px;font-weight:800;letter-spacing:.3px}
-  @media (max-width:768px){.title{font-size:22px}}
   .pill{font-size:13px;color:#0b1020;background:var(--accent);padding:6px 10px;border-radius:999px}
   .grid{display:grid;gap:16px}
   .g-2{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -33,21 +31,6 @@
   table{width:100%;border-collapse:collapse;border-spacing:0}
   th,td{padding:10px 12px;border-bottom:1px dashed #203158;vertical-align:top}
   th{color:#bcd0ff;text-align:left;background:#0e162c;position:sticky;top:0}
-  @media (max-width:768px){
-    table{font-size:12px}
-    th,td{padding:6px 8px}
-    .mobile-table{display:block;overflow-x:auto;white-space:nowrap}
-    .desktop-table{display:none}
-    .mobile-cards{display:block}
-  }
-  @media (min-width:769px){
-    .mobile-cards{display:none}
-  }
-  .center-card{background:#0e162b;border:1px solid #1f2d57;border-radius:12px;padding:16px;margin:12px 0}
-  .center-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1f2d57}
-  .center-header h3{font-size:16px;margin:0;color:var(--ink)}
-  .center-info p{margin:6px 0;font-size:14px;line-height:1.4}
-  .center-info strong{color:#bcd0ff}
   .kpi{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
   .kpi .chip{background:#0d1a33;border:1px solid #1f2f57;color:#c8d6ff;border-radius:999px;padding:3px 8px;font-size:12px}
   .muted{color:var(--muted)}
@@ -56,17 +39,98 @@
   .route li b::before{counter-increment:step;content:counter(step)'. ';}
   .addr{font-family:ui-monospace,Menlo,Consolas,monospace;color:#c7d2fe}
   footer{margin:28px 0 8px;color:#9fb2d9;font-size:13px}
+  .center-cards{display:grid;gap:16px}
+  .center-card{background:#0e162b;border:1px solid #1f2d57;border-radius:12px;padding:16px;transition:all 0.2s}
+  .center-card:hover{background:#121a31;border-color:var(--accent)}
+  .center-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1f2d57}
+  .center-header h3{margin:0;font-size:16px;font-weight:700}
+  .center-info{display:grid;gap:8px}
+  .info-item{display:flex;flex-direction:column;gap:4px}
+  .info-item .label{font-size:12px;color:var(--muted);font-weight:600}
+  .info-item .addr{font-family:ui-monospace,Menlo,Consolas,monospace;color:#c7d2fe;font-size:13px}
+  @media (min-width:768px){.center-cards{grid-template-columns:repeat(2,1fr)}}
+  @media (min-width:1200px){.center-cards{grid-template-columns:repeat(3,1fr)}}
 </style>
-<!-- 使用本地Chart.js或备用CDN -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  // 备用CDN，如果主CDN加载失败
-  if (typeof Chart === 'undefined') {
-    const script = document.createElement('script');
-    script.src = 'https://unpkg.com/chart.js@4.4.0/dist/chart.umd.js';
-    document.head.appendChild(script);
-  }
-</script>
+  <!-- 使用本地Chart.js或备用CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // 备用CDN，如果主CDN加载失败
+    if (typeof Chart === 'undefined') {
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/chart.js@4.4.0/dist/chart.umd.js';
+      document.head.appendChild(script);
+    }
+  </script>
+  <script>
+    // 确保Chart.js加载完成
+    let chartLoadAttempts = 0;
+    const maxAttempts = 50; // 5秒超时
+
+    function waitForChart() {
+      console.log('等待Chart.js加载...', typeof Chart, '尝试次数:', chartLoadAttempts);
+      
+      if (typeof Chart !== 'undefined') {
+        console.log('Chart.js已加载，开始初始化雷达图');
+        initRadarChart();
+      } else {
+        chartLoadAttempts++;
+        if (chartLoadAttempts >= maxAttempts) {
+          console.log('Chart.js加载超时，显示备用内容');
+          showFallbackContent();
+        } else {
+          console.log('Chart.js未加载，100ms后重试');
+          setTimeout(waitForChart, 100);
+        }
+      }
+    }
+
+    // 添加一个简单的测试函数
+    function testChart() {
+      console.log('测试Chart.js功能...');
+      if (typeof Chart !== 'undefined') {
+        console.log('Chart.js可用');
+        return true;
+      } else {
+        console.log('Chart.js不可用');
+        return false;
+      }
+    }
+
+    // 重试加载图表
+    function retryLoadChart() {
+      console.log('手动重试加载图表...');
+      document.getElementById('chartLoading').innerHTML = `
+        <div style="text-align: center;">
+          <div style="font-size: 24px; margin-bottom: 8px;">📊</div>
+          <div>正在重新加载图表...</div>
+          <button onclick="retryLoadChart()" style="margin-top: 12px; padding: 8px 16px; background: var(--accent); color: #0b1020; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;">🔄 重新加载</button>
+        </div>
+      `;
+      waitForChart();
+    }
+
+    // 显示备用内容（如果Chart.js完全无法加载）
+    function showFallbackContent() {
+      console.log('显示备用内容...');
+      const radarData = getRadarData();
+      const centerNames = radarData.datasets.map(dataset => dataset.label);
+      const scores = radarData.datasets.map(dataset => {
+        const avg = (dataset.data.reduce((a, b) => a + b, 0) / dataset.data.length).toFixed(1);
+        return `${dataset.label}: ${avg}分`;
+      });
+
+      document.getElementById('chartLoading').innerHTML = `
+        <div style="text-align: center;">
+          <div style="font-size: 24px; margin-bottom: 8px;">📊</div>
+          <div style="margin-bottom: 16px;">图表加载失败，显示评分摘要</div>
+          <div style="text-align: left; max-width: 400px; margin: 0 auto;">
+            ${scores.map(score => `<div style="margin: 8px 0; padding: 8px; background: rgba(122, 162, 255, 0.1); border-radius: 6px;">${score}</div>`).join('')}
+          </div>
+          <button onclick="retryLoadChart()" style="margin-top: 16px; padding: 8px 16px; background: var(--accent); color: #0b1020; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;">🔄 重试加载图表</button>
+        </div>
+      `;
+    }
+  </script>
 </head>
 <body>
   <div class="wrap">
@@ -124,33 +188,40 @@
 
     <section class="card" style="margin-top:16px">
       <h2>横评总表</h2>
-      
-      <!-- 桌面端表格 -->
-      <div class="desktop-table">
-        <table>
-        <thead>
-          <tr>
-            <th>会所（英文/拼音）</th>
-            <th>地址</th>
-            <th>医疗/护理信息透明度</th>
-            <th>医院履历/执业证</th>
-            <th>医疗背书 / 查房</th>
-            <th>价格带（28天）</th>
-            <th>口碑与风险要点</th>
-            <th>评级</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><b>United Family（和睦家）</b></td>
-            <td class="addr">长宁区 平塘路699号</td>
-            <td>高（岗位公开、制度完善）</td>
-            <td>明确要求医院经验、注册护士执照</td>
-            <td>医院体系、标准化查房</td>
-            <td>TBD（高）</td>
-            <td>医疗安全系数高，费用偏高</td>
-            <td><span class="badge A">A</span></td>
-          </tr>
+      <div class="center-cards">
+        <!-- United Family -->
+        <div class="center-card">
+          <div class="center-header">
+            <h3>United Family（和睦家）</h3>
+            <span class="badge A">A</span>
+          </div>
+          <div class="center-info">
+            <div class="info-item">
+              <span class="label">📍 地址：</span>
+              <span class="addr">长宁区 平塘路699号</span>
+            </div>
+            <div class="info-item">
+              <span class="label">💰 价格：</span>
+              <span>TBD（高）</span>
+            </div>
+            <div class="info-item">
+              <span class="label">🏥 医疗透明度：</span>
+              <span>高（岗位公开、制度完善）</span>
+            </div>
+            <div class="info-item">
+              <span class="label">👩‍⚕️ 执业要求：</span>
+              <span>明确要求医院经验、注册护士执照</span>
+            </div>
+            <div class="info-item">
+              <span class="label">🏨 医疗背书：</span>
+              <span>医院体系、标准化查房</span>
+            </div>
+            <div class="info-item">
+              <span class="label">⚠️ 风险要点：</span>
+              <span>医疗安全系数高，费用偏高</span>
+            </div>
+          </div>
+        </div>
           <tr>
             <td><b>Moli Zhihui（茉莉智慧）</b></td>
             <td class="addr">浦东新区 银城中路600弄 中粮海景壹号 5–7号楼</td>
@@ -202,101 +273,7 @@
             <td><span class="badge D">D</span></td>
           </tr>
         </tbody>
-        </table>
-      </div>
-
-      <!-- 移动端卡片 -->
-      <div class="mobile-cards">
-        <div class="center-card">
-          <div class="center-header">
-            <h3>United Family（和睦家）</h3>
-            <span class="badge A">A</span>
-          </div>
-          <div class="center-info">
-            <p><strong>地址：</strong>长宁区 平塘路699号</p>
-            <p><strong>透明度：</strong>高（岗位公开、制度完善）</p>
-            <p><strong>执业证：</strong>明确要求医院经验、注册护士执照</p>
-            <p><strong>医疗背书：</strong>医院体系、标准化查房</p>
-            <p><strong>价格：</strong>TBD（高）</p>
-            <p><strong>要点：</strong>医疗安全系数高，费用偏高</p>
-          </div>
-        </div>
-
-        <div class="center-card">
-          <div class="center-header">
-            <h3>Moli Zhihui（茉莉智慧）</h3>
-            <span class="badge B">B</span>
-          </div>
-          <div class="center-info">
-            <p><strong>地址：</strong>浦东新区 银城中路600弄 中粮海景壹号 5–7号楼</p>
-            <p><strong>透明度：</strong>中（产康岗位较多）</p>
-            <p><strong>执业证：</strong>未见硬性"医院履历"字样</p>
-            <p><strong>医疗背书：</strong>宣称"智慧/数据化护理"（需核实）</p>
-            <p><strong>价格：</strong>¥190k–209k</p>
-            <p><strong>要点：</strong>高端口碑+高价，核实性价比</p>
-          </div>
-        </div>
-
-        <div class="center-card">
-          <div class="center-header">
-            <h3>Jinen Xuan（锦恩·萱）</h3>
-            <span class="badge B">B</span>
-          </div>
-          <div class="center-info">
-            <p><strong>地址：</strong>徐汇区 衡山路12号 华邑酒店 2–6楼</p>
-            <p><strong>透明度：</strong>中（品牌与模式清晰）</p>
-            <p><strong>执业证：</strong>执业证隐含；医院履历未明示</p>
-            <p><strong>医疗背书：</strong>宣称 24h 1v1（到店核实）</p>
-            <p><strong>价格：</strong>¥120k–180k</p>
-            <p><strong>要点：</strong>高端定位，重验证落地执行</p>
-          </div>
-        </div>
-
-        <div class="center-card">
-          <div class="center-header">
-            <h3>Bella ISLA Aiyu（艾屿）</h3>
-            <span class="badge C">C</span>
-          </div>
-          <div class="center-info">
-            <p><strong>地址：</strong>长宁区 临虹路7号 阿纳迪酒店 9楼</p>
-            <p><strong>透明度：</strong>中低（集团信息较多，护理JD少）</p>
-            <p><strong>执业证：</strong>未见硬性要求</p>
-            <p><strong>医疗背书：</strong>宣称 1v1 护理团队</p>
-            <p><strong>价格：</strong>高（10万+）</p>
-            <p><strong>要点：</strong>奢侈定位，用户实评稀少</p>
-          </div>
-        </div>
-
-        <div class="center-card">
-          <div class="center-header">
-            <h3>Xing Yaolan（星摇篮）</h3>
-            <span class="badge C">C</span>
-          </div>
-          <div class="center-info">
-            <p><strong>地址：</strong>杨浦区 安波路467弄 法朵公寓12楼 1201–1214室</p>
-            <p><strong>透明度：</strong>低–中（连锁存在感，JD稀少）</p>
-            <p><strong>执业证：</strong>N/A</p>
-            <p><strong>医疗背书：</strong>宣称 1v1 护理（需核实）</p>
-            <p><strong>价格：</strong>¥56.9k–57k</p>
-            <p><strong>要点：</strong>照片多评论少，合同细则要看</p>
-          </div>
-        </div>
-
-        <div class="center-card">
-          <div class="center-header">
-            <h3>Yueya Wan（月芽湾）</h3>
-            <span class="badge D">D</span>
-          </div>
-          <div class="center-info">
-            <p><strong>地址：</strong>浦东新区 浦东大道1525号 西楼6楼</p>
-            <p><strong>透明度：</strong>低（护理信息公开少）</p>
-            <p><strong>执业证：</strong>N/A</p>
-            <p><strong>医疗背书：</strong>未知</p>
-            <p><strong>价格：</strong>¥58k–64k</p>
-            <p><strong>要点：</strong>透明度低，首访谨慎</p>
-          </div>
-        </div>
-      </div>
+      </table>
     </section>
 
     <section class="card" style="margin-top:16px">
@@ -344,12 +321,13 @@
 
     <section class="card" style="margin-top:16px">
       <h2>评价雷达图</h2>
-      <p class="muted">基于招聘信息透明度、口碑/风险、价格合理性（数值越高表示越划算）等维度的综合评价。</p>
+      <p class="muted" id="radarDescription">基于医疗资质透明度、护理团队专业度、环境与硬件质量等维度的AI初步评分</p>
       <div style="position: relative; height: 400px; max-width: 600px; margin: 0 auto;">
         <div id="chartLoading" style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--muted);">
           <div style="text-align: center;">
             <div style="font-size: 24px; margin-bottom: 8px;">📊</div>
             <div>正在加载图表...</div>
+            <button onclick="retryLoadChart()" style="margin-top: 12px; padding: 8px 16px; background: var(--accent); color: #0b1020; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;">🔄 重新加载</button>
           </div>
         </div>
         <canvas id="radarChart" style="display: none;"></canvas>
@@ -385,46 +363,13 @@
       return true;
     }
 
-    // 雷达图数据
-    const radarData = {
-      labels: ['Recruit Info Transparency', 'Reputation/Risk', 'Price Reasonableness'],
+    // AI初评分数据（3个维度）
+    const aiRadarData = {
+      labels: ['医疗资质透明度', '护理团队专业度', '环境与硬件质量'],
       datasets: [
         {
-          label: 'Jinen Xuan（锦恩·萱）',
-          data: [5, 7, 6],
-          borderColor: '#ff9800',
-          backgroundColor: 'rgba(255, 152, 0, 0.2)',
-          borderWidth: 2,
-          pointBackgroundColor: '#ff9800',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: '#ff9800'
-        },
-        {
-          label: 'Yueya Wan（月芽湾）',
-          data: [0, 5, 8],
-          borderColor: '#795548',
-          backgroundColor: 'rgba(121, 85, 72, 0.2)',
-          borderWidth: 2,
-          pointBackgroundColor: '#795548',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: '#795548'
-        },
-        {
-          label: 'Xing Yaolan（星摇篮）',
-          data: [0, 5, 8],
-          borderColor: '#f44336',
-          backgroundColor: 'rgba(244, 67, 54, 0.2)',
-          borderWidth: 2,
-          pointBackgroundColor: '#f44336',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: '#f44336'
-        },
-        {
           label: 'United Family（和睦家）',
-          data: [9, 8, 5],
+          data: [9, 8, 8],
           borderColor: '#e91e63',
           backgroundColor: 'rgba(233, 30, 99, 0.2)',
           borderWidth: 2,
@@ -434,8 +379,19 @@
           pointHoverBorderColor: '#e91e63'
         },
         {
+          label: 'Jinen Xuan（锦恩·萱）',
+          data: [7, 7, 8],
+          borderColor: '#ff9800',
+          backgroundColor: 'rgba(255, 152, 0, 0.2)',
+          borderWidth: 2,
+          pointBackgroundColor: '#ff9800',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#ff9800'
+        },
+        {
           label: 'Moli Zhihui（茉莉智慧）',
-          data: [3, 6, 3],
+          data: [6, 7, 9],
           borderColor: '#00bcd4',
           backgroundColor: 'rgba(0, 188, 212, 0.2)',
           borderWidth: 2,
@@ -446,7 +402,7 @@
         },
         {
           label: 'Bella ISLA Aiyu（艾屿）',
-          data: [0, 7, 4],
+          data: [5, 6, 8],
           borderColor: '#009688',
           backgroundColor: 'rgba(0, 150, 136, 0.2)',
           borderWidth: 2,
@@ -454,68 +410,250 @@
           pointBorderColor: '#fff',
           pointHoverBackgroundColor: '#fff',
           pointHoverBorderColor: '#009688'
+        },
+        {
+          label: 'Xing Yaolan（星摇篮）',
+          data: [4, 5, 6],
+          borderColor: '#f44336',
+          backgroundColor: 'rgba(244, 67, 54, 0.2)',
+          borderWidth: 2,
+          pointBackgroundColor: '#f44336',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#f44336'
+        },
+        {
+          label: 'Yueya Wan（月芽湾）',
+          data: [3, 5, 5],
+          borderColor: '#795548',
+          backgroundColor: 'rgba(121, 85, 72, 0.2)',
+          borderWidth: 2,
+          pointBackgroundColor: '#795548',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#795548'
         }
       ]
     };
 
+    // 获取实地评分数据
+    function getFieldScores() {
+      try {
+        const savedData = localStorage.getItem('maternityCenterScores');
+        if (savedData) {
+          const scoreHistory = JSON.parse(savedData);
+          if (scoreHistory.length > 0) {
+            // 计算每个会所的最新评分
+            const centerScores = {};
+            scoreHistory.forEach(record => {
+              if (!centerScores[record.center] || record.timestamp > centerScores[record.center].timestamp) {
+                centerScores[record.center] = record;
+              }
+            });
+
+            // 转换为10维雷达图数据
+            const colors = ['#e91e63', '#ff9800', '#00bcd4', '#009688', '#f44336', '#795548'];
+            const datasets = Object.values(centerScores).map((record, index) => ({
+              label: record.center,
+              data: [
+                record.nursing, record.environment, record.medical, record.food, record.babyCare,
+                record.service, record.cleanliness, record.crowding || 5, record.specialService, record.reception
+              ],
+              borderColor: colors[index % colors.length],
+              backgroundColor: colors[index % colors.length] + '20',
+              borderWidth: 2,
+              pointBackgroundColor: colors[index % colors.length],
+              pointBorderColor: '#fff',
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: colors[index % colors.length]
+            }));
+
+            return {
+              labels: ['护理团队专业度', '环境与硬件质量', '医疗实力/对接度', '月子餐与营养管理', '婴儿护理与标准化程度', 
+                      '客服与服务体验', '清洁与卫生', '拥挤度与私密性', '特色服务与附加价值', '产妇综合印象'],
+              datasets: datasets
+            };
+          }
+        }
+      } catch (error) {
+        console.error('获取实地评分数据失败:', error);
+      }
+      return null;
+    }
+
+    // 动态雷达图数据
+    function getRadarData() {
+      const fieldScores = getFieldScores();
+      if (fieldScores) {
+        // 更新说明文字
+        document.getElementById('radarDescription').innerHTML = 
+          '基于实地考察的10个维度评分数据（包含护理专业度、环境质量、医疗实力、餐食营养管理等）';
+        return fieldScores;
+      } else {
+        // 更新说明文字
+        document.getElementById('radarDescription').innerHTML = 
+          '基于医疗资质透明度、护理团队专业度、环境与硬件质量等维度的AI初步评分';
+        return aiRadarData;
+      }
+    }
+
     // 雷达图配置
-    const radarConfig = {
-      type: 'radar',
-      data: radarData,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'top',
-            labels: {
-              color: '#e8eefc',
-              font: {
-                size: 12
-              },
-              usePointStyle: true,
-              padding: 15
+    function getRadarConfig(data) {
+      return {
+        type: 'radar',
+        data: data,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                color: '#e8eefc',
+                font: {
+                  size: data.labels.length > 5 ? 10 : 12
+                },
+                usePointStyle: true,
+                padding: 15
+              }
+            },
+            title: {
+              display: false
             }
           },
-          title: {
-            display: false
-          }
-        },
-        scales: {
-          r: {
-            beginAtZero: true,
-            max: 10,
-            min: 0,
-            ticks: {
-              display: false
-            },
-            grid: {
-              color: 'rgba(159, 178, 217, 0.2)'
-            },
-            angleLines: {
-              color: 'rgba(159, 178, 217, 0.3)'
-            },
-            pointLabels: {
-              color: '#bcd0ff',
-              font: {
-                size: 13,
-                weight: '600'
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 10,
+              min: 0,
+              ticks: {
+                display: false
+              },
+              grid: {
+                color: 'rgba(159, 178, 217, 0.2)'
+              },
+              angleLines: {
+                color: 'rgba(159, 178, 217, 0.3)'
+              },
+              pointLabels: {
+                color: '#bcd0ff',
+                font: {
+                  size: data.labels.length > 5 ? 11 : 13,
+                  weight: '600'
+                }
               }
             }
+          },
+          elements: {
+            point: {
+              radius: 4,
+              hoverRadius: 6
+            }
           }
-        },
-        elements: {
-          point: {
-            radius: 4,
-            hoverRadius: 6
+        }
+      };
+    }
+
+    // 等待Chart.js加载完成后创建雷达图
+    function initRadarChart() {
+      console.log('开始初始化雷达图...');
+      
+      if (typeof Chart === 'undefined') {
+        console.log('Chart.js未加载，等待...');
+        setTimeout(initRadarChart, 100);
+        return;
+      }
+
+      try {
+        const ctx = document.getElementById('radarChart');
+        if (!ctx) {
+          console.error('找不到雷达图画布元素');
+          return;
+        }
+
+        console.log('获取雷达图数据...');
+        const radarData = getRadarData();
+        console.log('雷达图数据:', radarData);
+        
+        const radarConfig = getRadarConfig(radarData);
+        console.log('雷达图配置:', radarConfig);
+
+        const chartCanvas = ctx.getContext('2d');
+        const chart = new Chart(chartCanvas, radarConfig);
+        
+        console.log('雷达图创建成功');
+        
+        // 隐藏加载状态，显示图表
+        document.getElementById('chartLoading').style.display = 'none';
+        ctx.style.display = 'block';
+        
+      } catch (error) {
+        console.error('雷达图初始化失败:', error);
+        document.getElementById('chartLoading').innerHTML = `
+          <div style="text-align: center; color: var(--bad);">
+            <div style="font-size: 24px; margin-bottom: 8px;">❌</div>
+            <div>图表加载失败: ${error.message}</div>
+            <div style="font-size: 12px; margin-top: 8px;">请刷新页面重试</div>
+          </div>
+        `;
+      }
+    }
+
+    // 页面加载完成后初始化雷达图
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('页面加载完成，开始初始化...');
+      // 检查网络状态
+      if (checkNetworkStatus()) {
+        // 使用waitForChart函数确保Chart.js加载完成
+        waitForChart();
+      }
+    });
+
+    // 确保在页面加载完成后初始化
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('页面加载完成，开始初始化...');
+        if (checkNetworkStatus()) {
+          waitForChart();
+        }
+      });
+    } else {
+      console.log('页面已加载，直接初始化...');
+      if (checkNetworkStatus()) {
+        waitForChart();
+      }
+    }
+
+    // 网络状态变化时重新检查
+    window.addEventListener('online', function() {
+      if (document.getElementById('chartLoading').style.display !== 'none') {
+        initRadarChart();
+      }
+    });
+
+    // 页面获得焦点时检查是否有新的评分数据
+    window.addEventListener('focus', function() {
+      // 如果图表已经显示，检查是否需要更新
+      const chartCanvas = document.getElementById('radarChart');
+      if (chartCanvas && chartCanvas.style.display !== 'none') {
+        const currentData = getRadarData();
+        const existingChart = Chart.getChart(chartCanvas);
+        
+        if (existingChart) {
+          // 检查数据是否有变化
+          const hasFieldScores = getFieldScores() !== null;
+          const currentLabels = existingChart.data.labels;
+          const shouldUpdate = (hasFieldScores && currentLabels.length === 3) || 
+                              (!hasFieldScores && currentLabels.length === 10);
+          
+          if (shouldUpdate) {
+            // 销毁旧图表，创建新图表
+            existingChart.destroy();
+            initRadarChart();
           }
         }
       }
-    };
-
-    // 创建雷达图
-    const ctx = document.getElementById('radarChart').getContext('2d');
-    new Chart(ctx, radarConfig);
+    });
   </script>
 </body>
 </html>
